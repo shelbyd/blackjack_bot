@@ -13,7 +13,7 @@ paths = {
 gulp.task 'clean', (cb) =>
   del ['dist'], cb
 
-gulp.task 'scripts', ['clean'], =>
+gulp.task 'deploy', ['clean'], =>
   gulp.src(paths.srcs)
     .pipe(coffee())
     .pipe(uglify())
