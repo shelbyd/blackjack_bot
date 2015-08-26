@@ -3,3 +3,6 @@ module.exports = (config) =>
     frameworks: ['jasmine']
     preprocessors:
       '**/*.coffee': ['coffee']
+    browsers: [
+      'PhantomJS'
+    ]

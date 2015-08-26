@@ -4,7 +4,6 @@
   "authors": [
     "Shelby Doolittle <shelby@shelbyd.com>"
   ],
-  "main": "js/main.js",
   "moduleType": [
     "globals"
   ],

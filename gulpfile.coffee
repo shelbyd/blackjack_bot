@@ -20,6 +20,13 @@ gulp.task 'deploy', ['clean'], =>
     .pipe(concat('all.min.js'))
     .pipe(gulp.dest('dist'))
 
+gulp.task 'test', =>
+  gulp.src(paths.tests.concat(paths.srcs))
+    .pipe(karma(
+      configFile: 'karma.conf.coffee'
+      action: 'run'
+    ))
+
 gulp.task 'default', =>
   gulp.src(paths.tests.concat(paths.srcs))
     .pipe(karma(
