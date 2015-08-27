@@ -25,23 +25,27 @@ class BetCalculator
         newestShoe = newShoe.removeCard(myCardTwo)
         for dealerCard, dealerCardCount of newestShoe.cards
           continue if dealerCardCount == 0
-          return 0 if new Date().getTime() - startTime > TIME_TO_CALCULATE
+          return 0 if (new Date().getTime() - startTime) > TIME_TO_CALCULATE
+          console.log myCardOne, myCardTwo, dealerCard
           toEval.push
             myCardOne: myCardOne
             myCardTwo: myCardTwo
             dealerCard: dealerCard
+            weight: myCardOneCount * myCardTwoCount * dealerCardCount
 
     shuffle(toEval)
 
     ev = 0
     evaled = 0
-    while (toEval.length and new Date().getTime() - startTime < TIME_TO_CALCULATE)
+    while (toEval.length and (new Date().getTime() - startTime) < TIME_TO_CALCULATE)
       evaled += 1
       thisEval = toEval.pop()
-      ev += new GameState(
+      value = new GameState(
                 new CardList().addCard(thisEval.myCardOne).addCard(thisEval.myCardTwo),
                 new CardList().addCard(thisEval.dealerCard),
                 shoe.removeCard(thisEval.myCardOne).removeCard(thisEval.myCardTwo).removeCard(thisEval.dealerCard))
-                .expectedValueOfBestPlay()
+                .expectedValueOfBestPlay() * thisEval.weight
+      console.log(thisEval) if value == -Infinity
+      ev += value
 
     ev / evaled
