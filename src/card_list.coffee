@@ -12,6 +12,19 @@ class CardList
     'ten'
   ]
 
+  @shoe: (deckCount)->
+    new CardList
+      ace: 4 * deckCount
+      two: 4 * deckCount
+      three: 4 * deckCount
+      four: 4 * deckCount
+      five: 4 * deckCount
+      six: 4 * deckCount
+      seven: 4 * deckCount
+      eight: 4 * deckCount
+      nine: 4 * deckCount
+      ten: 16 * deckCount
+
   constructor: (cards) ->
     @cards = cards || {}
     @cards[name] = @cards[name] || 0 for name in RANKS

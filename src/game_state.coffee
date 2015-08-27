@@ -37,11 +37,11 @@ class GameState
 
   myHand: => new Hand(@my)
 
-  bestPlay: => @bestMoveAndExpectedValue()[0]
+  bestPlay: => @bestPlayAndExpectedValue()[0]
 
-  expectedValueOfBestMove: => @bestMoveAndExpectedValue()[1]
+  expectedValueOfBestPlay: => @bestPlayAndExpectedValue()[1]
 
-  bestMoveAndExpectedValue: =>
+  bestPlayAndExpectedValue: =>
     stand = @standExpectedValue()
     hit = @hitExpectedValue()
     double = @doubleExpectedValue()
@@ -60,7 +60,7 @@ class GameState
     result = 0
     for name, value of @unseen.cards
       continue if value == 0
-      result += new GameState(@my.addCard(name), @dealer, @unseen.removeCard(name)).expectedValueOfBestMove() * value
+      result += new GameState(@my.addCard(name), @dealer, @unseen.removeCard(name)).expectedValueOfBestPlay() * value
     result / @unseen.cardCount()
 
   doubleExpectedValue: =>
