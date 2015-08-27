@@ -10,7 +10,6 @@ class GameState
 
     return -Infinity if @unseen.cardCount() == 0
 
-    # console.log 'Calculating EV of', @my.toString(), @dealer.toString()
     expected = 0
     for name, value of @unseen.cards
       continue if @unseen.cardCount(name) == 0

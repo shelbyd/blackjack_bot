@@ -26,7 +26,6 @@ class BetCalculator
         for dealerCard, dealerCardCount of newestShoe.cards
           continue if dealerCardCount == 0
           return 0 if (new Date().getTime() - startTime) > TIME_TO_CALCULATE
-          console.log myCardOne, myCardTwo, dealerCard
           toEval.push
             myCardOne: myCardOne
             myCardTwo: myCardTwo
@@ -45,7 +44,6 @@ class BetCalculator
                 new CardList().addCard(thisEval.dealerCard),
                 shoe.removeCard(thisEval.myCardOne).removeCard(thisEval.myCardTwo).removeCard(thisEval.dealerCard))
                 .expectedValueOfBestPlay() * thisEval.weight
-      console.log(thisEval) if value == -Infinity
       ev += value
 
     ev / evaled
