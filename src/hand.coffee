@@ -24,3 +24,7 @@ class Hand
           result -= 10
 
     result
+
+  bust: => @value() > 21
+
+  blackjack: => @cardList.aces() == 1 && @cardList.tens() == 1
