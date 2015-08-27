@@ -7,7 +7,7 @@ karma = require 'gulp-karma'
 
 paths = {
   srcs: ['src/**/*.coffee'],
-  tests: ['test/**/*.coffee']
+  tests: ['test/**/*.coffee'],
 }
 
 gulp.task 'clean', (cb) =>
@@ -15,9 +15,9 @@ gulp.task 'clean', (cb) =>
 
 gulp.task 'deploy', ['clean'], =>
   gulp.src(paths.srcs)
-    .pipe(coffee())
-    .pipe(uglify())
     .pipe(concat('all.min.js'))
+    .pipe(coffee(bare: true))
+    .pipe(uglify())
     .pipe(gulp.dest('dist'))
 
 gulp.task 'test', =>
