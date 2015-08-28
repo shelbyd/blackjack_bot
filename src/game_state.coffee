@@ -21,3 +21,16 @@ class GameState
   dealerHand: => new Hand(@dealer)
 
   myHand: => new Hand(@my)
+
+  hitAllowed: =>
+    !@lost() and @unseen.cardCount() != 0 and !@myHand().blackjack()
+
+  doubleAllowed: =>
+    @my.cardCount() == 2 and @hitAllowed()
+
+  splitAllowed: =>
+    return false unless @doubleAllowed()
+
+    return true for card, value of @my.cards when value == 2
+
+    false

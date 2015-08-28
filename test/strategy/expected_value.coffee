@@ -63,3 +63,11 @@ describe 'ExpectedValue', ->
         dealer = new CardList().withNine()
         unseen = new CardList().withTen().withTen()
         expect(ExpectedValue.bestPlay(new GameState(myHand, dealer, unseen))).toEqual('double')
+
+    describe 'when I have aces', ->
+      it 'is split', ->
+        myHand = new CardList().withAce().withAce()
+        dealer = new CardList().withNine()
+        unseen = new CardList().withTen().withTen().withTen().withTen()
+        gameState = new GameState(myHand, dealer, unseen)
+        expect(ExpectedValue.bestPlay(gameState)).toEqual('split')

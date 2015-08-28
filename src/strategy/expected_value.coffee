@@ -34,6 +34,7 @@ class ExpectedValue
     ev.stand = @standExpectedValue(gameState)
     ev.hit = @hitExpectedValue(gameState)
     ev.double = @doubleExpectedValue(gameState)
+    ev.split = @splitExpectedValue(gameState)
 
     best = ev: -Infinity
     for key, value of ev when value > best.ev
@@ -46,7 +47,7 @@ class ExpectedValue
   @standExpectedValue: (gameState) -> @expectedValue(gameState)
 
   @hitExpectedValue: (gameState) ->
-    return -Infinity if gameState.lost() or gameState.unseen.cardCount() == 0
+    return -Infinity unless gameState.hitAllowed()
     result = 0
     for name, value of gameState.unseen.cards
       continue if value == 0
@@ -57,5 +58,14 @@ class ExpectedValue
     new GameState(gameState.my.addCard(name), gameState.dealer, gameState.unseen.removeCard(name))
 
   @doubleExpectedValue: (gameState) ->
-    return -Infinity if gameState.my.cardCount() > 2
+    return -Infinity unless gameState.doubleAllowed()
     2 * @hitExpectedValue(gameState)
+
+  @splitExpectedValue: (gameState) ->
+    return -Infinity unless gameState.splitAllowed()
+
+    cardIHave = null
+    cardIHave = card for card, value of gameState.my.cards when value == 2
+
+    stateAfterSplit = new GameState(gameState.my.removeCard(cardIHave), gameState.dealer, gameState.unseen)
+    2 * @hitExpectedValue(stateAfterSplit)
