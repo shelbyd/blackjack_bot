@@ -74,4 +74,4 @@ class CardList
   toString: =>
     result = {}
     result[name] = @cards[name] for name in RANKS when @cards[name]
-    result
+    JSON.stringify(result)

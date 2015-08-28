@@ -32,13 +32,13 @@ class BetCalculator
             dealerCard: dealerCard
             weight: myCardOneCount * myCardTwoCount * dealerCardCount
 
-    shuffle(toEval)
+    toEval.sort (a, b) -> a.weight - b.weight
 
     ev = 0
     evaled = 0
     while (toEval.length and (new Date().getTime() - startTime) < TIME_TO_CALCULATE)
-      evaled += 1
       thisEval = toEval.pop()
+      evaled += thisEval.weight
       value = new GameState(
                 new CardList().addCard(thisEval.myCardOne).addCard(thisEval.myCardTwo),
                 new CardList().addCard(thisEval.dealerCard),

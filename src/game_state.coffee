@@ -1,3 +1,15 @@
+expectedValueCache = {}
+
+expectedValue_ = (my, dealer, unseen) ->
+  key = "#{my.toString()}#{dealer.toString()}#{unseen.toString()}"
+  if not expectedValueCache[key]
+    expected = 0
+    for name, value of unseen.cards
+      continue if unseen.cardCount(name) == 0
+      expected += new GameState(my, dealer.addCard(name), unseen.removeCard(name)).expectedValue() * value
+    expectedValueCache[key] = expected / unseen.cardCount()
+  expectedValueCache[key]
+
 class GameState
   constructor: (@my, @dealer, @unseen) ->
 
@@ -10,11 +22,7 @@ class GameState
 
     return -Infinity if @unseen.cardCount() == 0
 
-    expected = 0
-    for name, value of @unseen.cards
-      continue if @unseen.cardCount(name) == 0
-      expected += new GameState(@my, @dealer.addCard(name), @unseen.removeCard(name)).expectedValue() * value
-    expected / @unseen.cardCount()
+    expectedValue_ @my, @dealer, @unseen
 
   won: =>
     @over() and not @lost() and not @push()

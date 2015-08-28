@@ -4,10 +4,13 @@ uglify = require 'gulp-uglify'
 concat = require 'gulp-concat'
 del = require 'del'
 karma = require 'gulp-karma'
+fs = require 'fs'
+insert = require 'gulp-insert'
 
 paths = {
   srcs: ['src/**/*.coffee'],
   tests: ['test/**/*.coffee'],
+  integration: ['integration/**/*.coffee'],
 }
 
 gulp.task 'clean', (cb) =>
@@ -26,6 +29,14 @@ gulp.task 'test', =>
       configFile: 'karma.conf.coffee'
       action: 'run'
     ))
+
+gulp.task 'integration', ['deploy'], =>
+  allFileContent = fs.readFileSync 'dist/all.min.js', 'utf8'
+
+  gulp.src(paths.integration)
+    .pipe(coffee(bare: true))
+    .pipe(insert.prepend(allFileContent + "\n\n"))
+    .pipe(gulp.dest('dist/integration'))
 
 gulp.task 'default', =>
   gulp.src(paths.tests.concat(paths.srcs))
