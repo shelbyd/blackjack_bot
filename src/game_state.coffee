@@ -1,28 +1,5 @@
-expectedValueCache = {}
-
-expectedValue_ = (my, dealer, unseen) ->
-  key = "#{my.toString()}#{dealer.toString()}#{unseen.toString()}"
-  if not expectedValueCache[key]
-    expected = 0
-    for name, value of unseen.cards
-      continue if unseen.cardCount(name) == 0
-      expected += new GameState(my, dealer.addCard(name), unseen.removeCard(name)).expectedValue() * value
-    expectedValueCache[key] = expected / unseen.cardCount()
-  expectedValueCache[key]
-
 class GameState
   constructor: (@my, @dealer, @unseen) ->
-
-  expectedValue: =>
-    return -1 if @lost()
-    if @won()
-      return 1.5 if @myHand().blackjack()
-      return 1
-    return 0 if @push()
-
-    return -Infinity if @unseen.cardCount() == 0
-
-    expectedValue_ @my, @dealer, @unseen
 
   won: =>
     @over() and not @lost() and not @push()
@@ -44,37 +21,3 @@ class GameState
   dealerHand: => new Hand(@dealer)
 
   myHand: => new Hand(@my)
-
-  bestPlay: => @bestPlayAndExpectedValue()[0]
-
-  expectedValueOfBestPlay: => @bestPlayAndExpectedValue()[1]
-
-  bestPlayAndExpectedValue: =>
-    stand = @standExpectedValue()
-    hit = @hitExpectedValue()
-    double = @doubleExpectedValue()
-
-    if stand > hit and stand > double
-      ['stand', stand]
-    else if hit > double
-      ['hit', hit]
-    else
-      ['double', double]
-
-  standExpectedValue: => @expectedValue()
-
-  hitExpectedValue: =>
-    return -Infinity if @lost() or @unseen.cardCount() == 0
-    result = 0
-    for name, value of @unseen.cards
-      continue if value == 0
-      result += new GameState(@my.addCard(name), @dealer, @unseen.removeCard(name)).expectedValueOfBestPlay() * value
-    result / @unseen.cardCount()
-
-  doubleExpectedValue: =>
-    return -Infinity if @my.cardCount() > 2 or @unseen.cardCount() == 0
-    result = 0
-    for name, value of @unseen.cards
-      continue if value == 0
-      result += new GameState(@my.addCard(name), @dealer, @unseen.removeCard(name)).standExpectedValue() * value
-    2 * result / @unseen.cardCount()

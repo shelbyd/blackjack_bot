@@ -39,11 +39,13 @@ class BetCalculator
     while (toEval.length and (new Date().getTime() - startTime) < TIME_TO_CALCULATE)
       thisEval = toEval.pop()
       evaled += thisEval.weight
-      value = new GameState(
-                new CardList().addCard(thisEval.myCardOne).addCard(thisEval.myCardTwo),
-                new CardList().addCard(thisEval.dealerCard),
-                shoe.removeCard(thisEval.myCardOne).removeCard(thisEval.myCardTwo).removeCard(thisEval.dealerCard))
-                .expectedValueOfBestPlay() * thisEval.weight
+      gameState = new GameState(
+                      new CardList().addCard(thisEval.myCardOne).addCard(thisEval.myCardTwo),
+                      new CardList().addCard(thisEval.dealerCard),
+                      shoe.removeCard(thisEval.myCardOne)
+                          .removeCard(thisEval.myCardTwo)
+                          .removeCard(thisEval.dealerCard))
+      value = ExpectedValue.expectedValueOfBestPlay(gameState) * thisEval.weight
       ev += value
 
     ev / evaled
