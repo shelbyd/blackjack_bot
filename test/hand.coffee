@@ -39,7 +39,7 @@ describe 'Hand', ->
         expect(hand.value()).toEqual(21)
 
     describe 'with a,9,a,a', ->
-      it 'is 22', ->
+      it 'is 12', ->
         cards = new CardList().withAce().withAce().withAce().withNine()
         hand = new Hand(cards)
-        expect(hand.value()).toEqual(22)
+        expect(hand.value()).toEqual(12)

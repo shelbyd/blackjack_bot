@@ -9,6 +9,7 @@ class Hand
     eight: 8
     nine: 9
     ten: 10
+    ace: 11
 
   constructor: (@cardList) ->
 
@@ -19,9 +20,7 @@ class Hand
 
     if @cardList.aces()
       for ace in [1..@cardList.aces()]
-        result += 11
-        if result > 21
-          result -= 10
+        result -= 10 if result > 21
 
     result
 
