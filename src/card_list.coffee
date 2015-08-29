@@ -58,6 +58,7 @@ class CardList
   fours: => @cards.four
   fives: => @cards.five
   sixs: => @cards.six
+  sixes: => @cards.six
   sevens: => @cards.seven
   eights: => @cards.eight
   nines: => @cards.nine
