@@ -17,19 +17,27 @@ class Gambit
   constructor: (@bettor, @strategy) ->
 
   run: =>
+    @shoe = CardList.shoe(6)
     setInterval((=> @loop()), 1000)
 
   loop: =>
-    myCards = @getMyCards()
-    dealerCards = @getDealerCards()
-    return unless myCards.cardCount() and dealerCards.cardCount()
-    @rejectInsurance()
-    gameState = new GameState(myCards, dealerCards, CardList.shoe(6))
-    play = @strategy.bestPlay(gameState)
-    button = ".js-#{play}"
-    $(button).click()
+    if @remainingCardCount() == 312
+      console.log 'Reshuffle!!!'
+      @shoe = CardList.shoe(6)
 
-  getMyCards: => @getCards [21, 22, 23, 24, 25, 26, 27]
+    if @blueMessage() == 'Place Your Bet'
+      @donePlaying = false
+      @updateShoe()
+      @bet()
+    else if @haveCards()
+      @play()
+
+  haveCards: =>
+    @getMyCards().cardCount() and @getDealerCards().cardCount()
+
+  getMyCards: =>
+    @lastMyCards = @getCards [21, 22, 23, 24, 25, 26, 27]
+    @lastMyCards
 
   getCards: (ids) =>
     CardList.fromList(
@@ -44,9 +52,54 @@ class Gambit
       VALUES[className.substr(5)]
     ).filter((value) => value?)[0]
 
-  getDealerCards: => @getCards [1, 2, 3, 4, 5, 6, 7]
+  getDealerCards: =>
+    @lastDealerCards =
+      if @donePlaying
+        @getCards [1, 2, 3, 4, 5, 6, 7, 99999]
+      else
+        @getCards [1, 2, 3, 4, 5, 6, 7]
+    @lastDealerCards
+
+  play: =>
+    @rejectInsurance()
+    gameState = new GameState(@getMyCards(), @getDealerCards(), @liveShoe())
+    play = @strategy.bestPlay(gameState)
+    @donePlaying = play == 'stand'
+    button = ".js-#{play}"
+    $(button).click()
 
   rejectInsurance: =>
-    insuranceMessage = $('.statuses .status.blue.show')
-    if insuranceMessage.length and insuranceMessage.text() == 'Do You Want Insurance?'
+    if @blueMessage() == 'Do You Want Insurance?'
       $('.js-reject-insurance').click()
+
+  blueMessage: =>
+    $('.statuses .status.blue.show').text()
+
+  bet: =>
+    $('.value-1 .chip-1:last').click()
+
+    baseBet = 1
+    multiplier = @bettor.multiplier(@liveShoe())
+    betAmount = Math.max(Math.floor(baseBet * multiplier), baseBet)
+    for i in [1..betAmount]
+      $('.bet-main').click()
+
+    $('.js-deal').click()
+
+  updateShoe: =>
+    if @lastMyCards? and @lastDealerCards?
+      for card in @lastMyCards.getCards()
+        @shoe = @shoe.removeCard(card)
+      for card in @lastDealerCards.getCards()
+        @shoe = @shoe.removeCard(card)
+
+  remainingCardCount: =>
+    Number.parseInt($('.remaining-card-count').text(), 10)
+
+  liveShoe: =>
+    shoe = @shoe
+    for card in @getMyCards().getCards()
+      shoe = shoe.removeCard(card)
+    for card in @getDealerCards().getCards()
+      shoe = shoe.removeCard(card)
+    shoe

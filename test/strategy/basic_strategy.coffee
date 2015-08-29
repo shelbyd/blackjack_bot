@@ -28,6 +28,7 @@ describe 'BasicStrategy', ->
       [[two, two], two, 'split']
       [[two, two], four, 'split']
       [[eight, eight], ace, 'split']
+      [[ten, ten, two], ace, 'stand']
     ]
 
     for test in tests

@@ -58,6 +58,7 @@ class BasicStrategy
     ace:   [ p,  p,  p,  p,  p,  p,  p,  p,  p,  p]
 
   @bestPlay: (gameState) ->
+    return 'stand' if gameState.myHand().bust()
     handValue = gameState.myHand().value()
     dealerCard = gameState.dealer.getCards()[0]
     isSoft = gameState.myHand().isSoft()
