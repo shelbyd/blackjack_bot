@@ -11,6 +11,7 @@ paths = {
   srcs: ['src/**/*.coffee'],
   tests: ['test/**/*.coffee'],
   integration: ['integration/**/*.coffee'],
+  gambit: ['main/gambit.coffee'],
 }
 
 gulp.task 'clean', (cb) =>
@@ -37,6 +38,13 @@ gulp.task 'integration', ['deploy'], =>
     .pipe(coffee(bare: true))
     .pipe(insert.prepend(allFileContent + "\n\n"))
     .pipe(gulp.dest('dist/integration'))
+
+gulp.task 'gambit', ['clean', 'deploy'], =>
+  gulp.src(paths.srcs.concat(paths.gambit))
+    .pipe(concat('gambit.min.js'))
+    .pipe(coffee(bare: true))
+    .pipe(uglify())
+    .pipe(gulp.dest('dist'))
 
 gulp.task 'default', =>
   gulp.src(paths.tests.concat(paths.srcs))
