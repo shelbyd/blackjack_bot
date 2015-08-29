@@ -10,7 +10,10 @@ expectedValue_ = (gameState) ->
     expected = 0
     for name, value of unseen.cards
       continue if unseen.cardCount(name) == 0
-      expected += ExpectedValue.expectedValue(new GameState(my, dealer.addCard(name), unseen.removeCard(name))) * value
+      expected += value * ExpectedValue.expectedValue(
+                              new GameState(my,
+                                            dealer.addCard(name),
+                                            unseen.removeCard(name)))
     expectedValueCache[key] = expected / unseen.cardCount()
   expectedValueCache[key]
 

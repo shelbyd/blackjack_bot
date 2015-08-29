@@ -2,7 +2,7 @@ time = (name, f) ->
   start = new Date().getTime()
   f()
   done = new Date().getTime()
-  console.log "#{name} took #{start - done}ms"
+  console.log "#{name} took #{done - start}ms"
 
 shoe = CardList.shoe(6)
 
@@ -11,11 +11,11 @@ time 'Tens', ->
   dealer = new CardList().withSeven()
   innerShoe = shoe.removeCard('ten').removeCard('ten').removeCard('seven')
   play = ExpectedValue.bestPlay(new GameState(hand, dealer, innerShoe))
-  puts "Play is: #{play}"
+  console.log "Play is: #{play}"
 
 time 'Aces', ->
   hand = new CardList().withAce().withAce()
   dealer = new CardList().withSeven()
   innerShoe = shoe.removeCard('ace').removeCard('ace').removeCard('seven')
   play = ExpectedValue.bestPlay(new GameState(hand, dealer, innerShoe))
-  puts "Play is: #{play}"
+  console.log "Play is: #{play}"
