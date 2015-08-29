@@ -25,6 +25,13 @@ class CardList
       nine: 4 * deckCount
       ten: 16 * deckCount
 
+  @fromList: (list) ->
+    object = {}
+    for item in list
+      object[item] = object[item] || 0
+      object[item] += 1
+    new CardList(object)
+
   constructor: (cards) ->
     @cards = cards || {}
     @cards[name] = @cards[name] || 0 for name in RANKS
@@ -76,3 +83,10 @@ class CardList
     result = {}
     result[name] = @cards[name] for name in RANKS when @cards[name]
     JSON.stringify(result)
+
+  getCards: =>
+    result = []
+    for name in RANKS
+      if @cards[name]
+        result.push name for index in [1..@cards[name]]
+    result

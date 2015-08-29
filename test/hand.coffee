@@ -43,3 +43,28 @@ describe 'Hand', ->
         cards = new CardList().withAce().withAce().withAce().withNine()
         hand = new Hand(cards)
         expect(hand.value()).toEqual(12)
+
+  describe '#isSoft', ->
+    describe 'with ace,two', ->
+      it 'is true', ->
+        cards = CardList.fromList(['ace', 'two'])
+        hand = new Hand(cards)
+        expect(hand.isSoft()).toBe(true)
+
+    describe 'with three, five', ->
+      it 'is false', ->
+        cards = CardList.fromList(['three', 'five'])
+        hand = new Hand(cards)
+        expect(hand.isSoft()).toBe(false)
+
+    describe 'with ace,six,six', ->
+      it 'is false', ->
+        cards = CardList.fromList(['ace', 'six', 'six'])
+        hand = new Hand(cards)
+        expect(hand.isSoft()).toBe(false)
+
+    describe 'with ace,five,five', ->
+      it 'is true', ->
+        cards = CardList.fromList(['ace', 'five', 'five'])
+        hand = new Hand(cards)
+        expect(hand.isSoft()).toBe(true)

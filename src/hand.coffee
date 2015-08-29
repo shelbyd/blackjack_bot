@@ -14,9 +14,7 @@ class Hand
   constructor: (@cardList) ->
 
   value: =>
-    result = 0
-    for name, value of RANK_VALUES
-      result += value * @cardList["#{name}s"]()
+    result = @rawValue_()
 
     if @cardList.aces()
       for ace in [1..@cardList.aces()]
@@ -24,6 +22,14 @@ class Hand
 
     result
 
+  rawValue_: =>
+    result = 0
+    for name, value of RANK_VALUES
+      result += value * @cardList["#{name}s"]()
+    result
+
   bust: => @value() > 21
 
   blackjack: => @cardList.aces() == 1 && @cardList.tens() == 1
+
+  isSoft: => not not @cardList.aces() and @rawValue_() <= 21
