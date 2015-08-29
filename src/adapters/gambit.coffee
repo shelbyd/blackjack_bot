@@ -78,7 +78,7 @@ class Gambit
   bet: =>
     $('.value-1 .chip-1:last').click()
 
-    baseBet = 1
+    baseBet = 2
     multiplier = @bettor.multiplier(@liveShoe())
     betAmount = Math.max(Math.floor(baseBet * multiplier), baseBet)
     for i in [1..betAmount]
