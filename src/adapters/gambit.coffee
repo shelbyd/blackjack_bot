@@ -18,6 +18,8 @@ class Gambit
 
   run: =>
     @shoe = CardList.shoe(6)
+    @hands = [[21, 22]]
+    @currentHand = 0
     setInterval((=> @loop()), 1000)
 
   loop: =>
@@ -26,9 +28,14 @@ class Gambit
       @shoe = CardList.shoe(6)
 
     if @blueMessage() == 'Place Your Bet'
+      @hands = [[21, 22]]
+      @currentHand = 0
       @donePlaying = false
+
       @updateShoe()
       @bet()
+    else if @blueMessage() == 'Do You Want Insurance?'
+      $('.js-reject-insurance').click()
     else if @haveCards()
       @play()
 
@@ -36,7 +43,7 @@ class Gambit
     @getMyCards().cardCount() and @getDealerCards().cardCount()
 
   getMyCards: =>
-    @lastMyCards = @getCards [21, 22, 23, 24, 25, 26, 27]
+    @lastMyCards = @getCards (@hands[@currentHand] || [])
     @lastMyCards
 
   getCards: (ids) =>
@@ -54,23 +61,36 @@ class Gambit
 
   getDealerCards: =>
     @lastDealerCards =
-      if @donePlaying
+      if @currentHand >= @hands.length
         @getCards [1, 2, 3, 4, 5, 6, 7, 99999]
       else
         @getCards [1, 2, 3, 4, 5, 6, 7]
     @lastDealerCards
 
   play: =>
-    @rejectInsurance()
     gameState = new GameState(@getMyCards(), @getDealerCards(), @liveShoe())
     play = @strategy.bestPlay(gameState)
-    @donePlaying = play == 'stand'
+
+    if play == 'stand'
+      @currentHand += 1
+      if @hands[@currentHand]?
+        @hands[@currentHand].push(@currentCardNumber() + 1)
+    else if play == 'split'
+      card = @hands[@currentHand].pop()
+      @hands[@currentHand].push(@currentCardNumber() + 1)
+      @hands.push([card])
+    else if play == 'hit'
+      @hands[@currentHand].push(@currentCardNumber() + 1)
+    else if play == 'double'
+      @hands[@currentHand].push(@currentCardNumber() + 1)
+      @currentHand += 1
+
     button = ".js-#{play}"
     $(button).click()
 
-  rejectInsurance: =>
-    if @blueMessage() == 'Do You Want Insurance?'
-      $('.js-reject-insurance').click()
+  currentCardNumber: =>
+    maxes = @hands.map((hand) -> Math.max.apply(@, hand))
+    Math.max.apply(@, maxes)
 
   blueMessage: =>
     $('.statuses .status.blue.show').text()
@@ -78,7 +98,7 @@ class Gambit
   bet: =>
     $('.value-1 .chip-1:last').click()
 
-    baseBet = 2
+    baseBet = Math.max(Math.floor(Number.parseInt($('#points').text(), 10) / 1000), 1)
     multiplier = @bettor.multiplier(@liveShoe())
     betAmount = Math.max(Math.floor(baseBet * multiplier), baseBet)
     for i in [1..betAmount]
