@@ -98,9 +98,9 @@ class Gambit
   bet: =>
     $('.value-1 .chip-1:last').click()
 
-    baseBet = Math.max(Math.floor(Number.parseInt($('#points').text(), 10) / 1000), 1)
+    baseBet = Math.max((Number.parseInt($('#points').text().replace(/[^\d]/g, ''), 10) / 1000) , 1)
     multiplier = @bettor.multiplier(@liveShoe())
-    betAmount = Math.max(Math.floor(baseBet * multiplier), baseBet)
+    betAmount = Math.max(Math.floor(baseBet * multiplier), 1)
     for i in [1..betAmount]
       $('.bet-main').click()
 
